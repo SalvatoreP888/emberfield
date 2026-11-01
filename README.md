@@ -6,7 +6,17 @@ The Rust source and compiled WASM binary are both included. Three.js requires Ja
 
 ## Run locally
 
-The checked-in `dist/` directory is ready to serve. From the project root:
+The checked-in `dist/` directory is ready to serve. First, download and unzip the full project. Then use the launcher for your system:
+
+| System | Start EMBERFIELD |
+| --- | --- |
+| macOS | Double-click `Launch-EMBERFIELD.command` |
+| Windows | Double-click `Launch-EMBERFIELD.bat` |
+| Linux | Run `./Launch-EMBERFIELD.sh` from the project folder |
+
+The launcher opens EMBERFIELD in your browser using a local-only server. Keep its window open while playing; close it or press Ctrl+C to stop. If the browser does not open automatically, open the address shown in the launcher. Python 3.7 or newer is required; no npm install or Rust build is needed. If macOS says the command is not executable, run `chmod +x Launch-EMBERFIELD.command Launch-EMBERFIELD.sh` in the project folder once.
+
+You can also start the server manually from the project root:
 
 ```sh
 python3 -m http.server 8000 --directory dist
