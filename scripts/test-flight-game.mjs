@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import { FlightGame, crossesRing } from '../dist/flight-game.js';
+const center = {x:0,y:10,z:0}, facing = {x:0,z:-1};
+assert.equal(crossesRing({x:0,y:10,z:20},{x:0,y:10,z:-20},center,facing),true,'fast path crossing hoop counts');
+assert.equal(crossesRing({x:7,y:10,z:20},{x:7,y:10,z:-20},center,facing),false,'outside the hoop is not counted');
+assert.equal(crossesRing({x:0,y:18,z:20},{x:0,y:18,z:-20},center,facing),false,'passing above a hoop is not counted');
+assert.equal(crossesRing({x:0,y:10,z:1},{x:0,y:10,z:2},center,facing),false,'nearby flight on one side is not counted');
+const attached = new Set();
+const scene = {add:o=>attached.add(o), remove:o=>attached.delete(o)};
+const sim = {height:()=>1, trees:()=>new Float32Array([0,1,-55,18,3,1,0,0,0,5])};
+const flight = {position:{x:0,y:25,z:0}, yaw:0, contacts:0};
+const game = new FlightGame({scene,sim});
+let state=game.start(flight);
+assert.equal(state.rings,0);assert.equal(attached.size,1);
+assert.ok(state.target.y>=1+18*1.2+6+3,'hoop clears nearby tree tops');
+assert.equal(state.direction,'ahead');
+function collect(){
+  const t=game.target, n=game.direction;
+  flight.position={x:t.x-n.x*10,y:t.y,z:t.z-n.z*10};game.previous={...flight.position};
+  flight.position={x:t.x+n.x*10,y:t.y,z:t.z+n.z*10};
+  return game.update(flight,.1);
+}
+state=collect();assert.equal(state.rings,1);assert.equal(state.score,100);assert.equal(state.streak,1);
+state=collect();assert.equal(state.rings,2);assert.equal(state.score,225);assert.equal(state.streak,2);assert.equal(state.bestStreak,2);
+flight.contacts++;state=game.update(flight,.1);assert.equal(state.streak,0);assert.equal(state.bestStreak,2);
+assert.match(state.event,/reset/);
+const oldTarget={...state.target};flight.position={x:state.target.x+200,y:state.target.y,z:state.target.z};state=game.update(flight,.1);
+assert.notDeepEqual(state.target,oldTarget,'missed rings are replaced within reach');
+assert.equal(state.rings,2,'missing a ring does not score');
+game.setEnabled(false, flight); assert.equal(game.group.visible,false);
+const scoreWhenDisabled=game.score;
+flight.position={x:flight.position.x+300,y:flight.position.y,z:flight.position.z};
+game.update(flight,.1); assert.equal(game.score,scoreWhenDisabled,'free flight does not score rings');
+game.setEnabled(true,flight); assert.equal(game.group.visible,true);
+assert.equal(game.snapshot(flight).direction,'ahead','resuming places a new ring ahead');
+game.dispose();assert.equal(attached.size,0);
+console.log('PASS swept hoop scoring, tree clearance, combos, collision reset, missed ring recovery, and disposal.');

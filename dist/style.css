@@ -17,3 +17,47 @@ body[data-renderer="canvas-compatibility"] .environment-panel,body[data-renderer
 .performance-details{border-top:1px solid #b9cda223;margin-top:15px;padding-top:12px}.performance-details summary{font-size:9px;cursor:pointer;color:#c4d2b9}.performance-details summary span{float:right;color:#8da580;font-size:7px;line-height:14px}.performance-details dl{display:grid;grid-template-columns:1fr;gap:4px;margin:13px 0 0}.performance-details dt{font-size:8px;color:#8da17f}.performance-details dd{font-size:9px;color:#cad8bd;margin:0 0 8px;font-variant-numeric:tabular-nums}
 @media(max-height:760px){.environment-panel{max-height:calc(100dvh - 195px)}}
 @media(max-width:780px){.environment-panel{max-height:calc(100dvh - 205px)}.phase-readout{font-size:8px;gap:10px;margin-top:12px}}
+
+/* Flight HUD: a compact instrument cluster leaves the chase view open. */
+.flight-panel,.flight-hud{--flight-ink:#edf2e4;--flight-muted:#b8c8ad;--flight-gold:#efc998;--flight-panel:#12251eec;--flight-line:#b9d3a343}
+.flight-panel{position:absolute;left:32px;top:300px;z-index:8;padding:13px 15px;background:var(--flight-panel);border:1px solid var(--flight-line);border-radius:10px;color:var(--flight-ink);backdrop-filter:blur(10px)}
+.flight-panel>span{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--flight-muted)}
+.flight-panel>div{display:flex;gap:8px;margin-top:10px}
+.flight-panel button,.flight-hud button{border:1px solid var(--flight-line);border-radius:6px;padding:9px 11px;font-size:11px;background:#8caa6e22;color:var(--flight-ink);cursor:pointer;transition:background .18s ease,border-color .18s ease}
+.flight-panel button:hover,.flight-hud button:hover{background:#9eb88140;border-color:#cde4b285}
+.flight-panel kbd,.flight-hud kbd{font-size:9px;color:#d3dfc4;margin-left:5px}
+.flight-hud{position:absolute;inset:0;z-index:12;pointer-events:none;color:var(--flight-ink)}
+.flight-instruments{position:absolute;left:32px;top:115px;width:min(290px,calc(100vw - 30px));padding:14px 15px;border-radius:10px;border:1px solid var(--flight-line);background:var(--flight-panel);backdrop-filter:blur(12px);box-shadow:0 8px 28px #08120d30;pointer-events:auto}
+.flight-kicker{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--flight-muted);font-size:9px;letter-spacing:.13em}
+.flight-kicker span{display:flex;align-items:center;gap:7px}.flight-kicker i{width:6px;height:6px;border-radius:50%;background:#d9af78;box-shadow:0 0 8px #efb56b88}
+.flight-kicker button{padding:6px 8px;font-size:10px;letter-spacing:0;white-space:nowrap}
+#flight-readout{display:block;margin-top:9px;font-size:12px;line-height:1.5;font-weight:600;letter-spacing:.035em;font-variant-numeric:tabular-nums}
+.flight-condition{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;margin-top:5px;font-size:11px;color:var(--flight-gold)}
+#flight-breath-status{color:#f9b793;font-weight:600}
+.flight-objective{display:grid;gap:3px;border-top:1px solid #b9d3a324;margin-top:10px;padding-top:9px;line-height:1.35}
+.flight-objective-label{font-size:9px;letter-spacing:.12em;color:#d5bb88}.flight-objective strong{font-size:11px;font-weight:600}.flight-objective>span:last-child{font-size:10px;color:var(--flight-muted)}
+.flight-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.flight-actions button{padding:7px 9px;font-size:10px}
+.flight-guide{font-size:10px;color:var(--flight-muted);margin-top:9px}.flight-guide summary{cursor:pointer;color:#d6e4c8;width:max-content}.flight-guide p{font-size:10px;line-height:1.6;max-width:260px;margin:7px 0 0;color:var(--flight-muted)}
+.flight-touch{display:none;position:absolute;left:16px;right:16px;bottom:max(16px,env(safe-area-inset-bottom));align-items:end;justify-content:space-between;gap:10px;touch-action:none}
+.flight-touch-directions{display:grid;grid-template-columns:repeat(2,46px);gap:6px;pointer-events:auto}
+.flight-touch-actions{display:flex;gap:6px;align-items:end;pointer-events:auto}
+.flight-touch button{min-width:46px;min-height:46px;padding:6px 10px;border-radius:9px;font-size:13px;font-weight:600;background:#173126e8;border:1px solid #d1e4ba66;touch-action:none;user-select:none;-webkit-user-select:none}
+.flight-touch button:active{background:#79925dcc}#flight-breath-control{background:#733b28ec;border-color:#f0ad8277}
+body[data-flight] .control-area,body[data-flight] .live-readout,body[data-flight] .minimap-wrap,body[data-flight] .lower-left{display:none}
+body[data-flight] #world canvas{cursor:crosshair;touch-action:none}
+[hidden]{display:none!important}
+.flight-panel button:focus-visible,.flight-hud button:focus-visible,.flight-guide summary:focus-visible{outline:2px solid #e8be88;outline-offset:3px}
+.environment-panel.closed{display:none}
+@media(max-width:780px){
+  .flight-panel{left:20px;top:270px;padding:11px 13px}
+  .flight-panel>div{flex-wrap:wrap;max-width:260px}.flight-panel button{padding:10px}
+  .flight-instruments{left:16px;top:78px;width:min(262px,calc(100vw - 32px));padding:10px 12px}
+  #flight-readout{font-size:11px}.flight-objective{margin-top:7px;padding-top:7px}.flight-actions{margin-top:7px}
+  .flight-guide{margin-top:7px}.flight-touch{display:flex}
+}
+@media(pointer:coarse){.flight-touch{display:flex}}
+@media(max-height:520px) and (pointer:coarse){
+  .flight-instruments{top:65px;padding:8px 10px}.flight-objective{margin-top:5px;padding-top:5px}.flight-actions{margin-top:5px}.flight-guide{display:none}
+  .flight-kicker button{padding:4px 7px}#flight-readout{margin-top:5px}.flight-actions button{padding:5px 7px}
+  .flight-touch{bottom:max(10px,env(safe-area-inset-bottom))}
+}

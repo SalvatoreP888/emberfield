@@ -61,6 +61,23 @@ Explore mode also supports one-finger orbit and two-finger navigation on touch d
 
 Automatic detail adjusts resolution, tree detail, effects, shadows, and bloom using recent frame timings. Manual settings keep the chosen quality level. Heat and Remaining fuel recolor the same simulated trees; the legend explains the displayed range. The performance panel shows the 95th-percentile frame time, physics cost per tick, achieved playback speed, loaded trees/chunks, particle counts, and worker status. The requested 6× speed can exceed the device's available processing budget; the achieved rate reports that difference.
 
+## Bird and dragon flight
+
+Choose **Bird** (B) or **Dragon** (G) to fly through the forest with a third-person chase camera. Both creatures have animated wings; the dragon has a larger body, more powerful flaps, a higher top speed, and wider turns.
+
+- **Space** (hold or tap): flap. **A/D** or **←/→**: turn.
+- **↑ / S**: pitch up. **↓ / W**: pitch down. Drag the forest to steer; click for captured mouse look on desktop.
+- **Shift**: tuck wings and dive. **Ctrl**: air brake. **L**: level pitch.
+- **F** (dragon): breathe fire. Aim toward nearby trees or the ground. Breath has limited charge and refills when released; fire that hits fuel ignites and spreads in the same Rust simulation as the regular fire tool.
+- **C** or **Camera**: switch between chase and first-person views. **P** or **Pause fire**: pause or resume the wildfire simulation. **Escape** or **Land**: return to the previous exploration camera. Transform switches creatures in flight.
+- Follow the golden rings to build a streak, or toggle **Trail** off for free flight. Touch devices have turn, pitch, flap, tuck, and dragon fire buttons.
+
+Diving converts altitude to speed; climbing spends speed. Drag slows a glide, wind causes drift, and low airspeed produces a soft stall. Flapping recovers energy with a cooldown. This is a forgiving point-mass flight model tuned for play, not a full aerodynamic simulator. Flight uses real time independently of wildfire pause and playback speed.
+
+Rapier 0.19.3 is vendored under `dist/vendor/` (Apache-2.0). Swept body, head, tail, and wing probes collide with local terrain, trunks, stumps, and conservative canopy shapes, including at dive speed; tucking narrows the wing clearance. This approximates the animated creature rather than testing every feather. The chase camera also avoids obstacles. Flight requires WebGL 2; the existing Canvas fallback continues to support exploration and wildfire tools. No new install step or CDN connection is needed.
+
+Run `npm run test:flight` for flight physics, collision, ring scoring, dragon fire, and actual WASM fire-spread checks.
+
 ## Architecture
 
 | File | Responsibility |
@@ -73,6 +90,9 @@ Automatic detail adjusts resolution, tree detail, effects, shadows, and bloom us
 | `dist/forest.js` | Spatial batches of instanced trees, three geometry detail levels, cached terrain tiles, dirty uploads, and burn appearance |
 | `dist/fire.js` | Surface/canopy flame shaders, quality budgets, depth-sorted smoke, and bounded interpolation of actual Rust particle positions |
 | `dist/compatibility.js` | Canvas fallback with cached forest and smoke-density layers; reads the same Rust state and Three.js camera |
+| `dist/flight.js`, `dist/flight-avatar.js` | Bird and dragon controls, chase camera, and animated creature models |
+| `dist/flight-physics.js`, `dist/flight-collision.js` | Flight energy, wind, swept creature collisions, and camera obstruction |
+| `dist/flight-game.js`, `dist/dragon-breath.js` | Optional flight trail and simulation-backed dragon fire |
 | `dist/main.js` | Input, camera, UI, weather controls, audio, timing, scene composition, and post-processing |
 | `dist/index.html`, `dist/style.css` | Interface and responsive layout |
 | `SIMULATION_API.md` | Exported WASM functions, numeric buffer layout, units, and integration contract |

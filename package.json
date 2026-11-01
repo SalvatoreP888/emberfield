@@ -5,8 +5,9 @@
   "type": "module",
   "description": "A Rust/WebAssembly wildfire sandbox with a Three.js rendering adapter.",
   "scripts": {
-    "check": "node --check dist/main.js && node --check dist/forest.js && node --check dist/fire.js && node --check dist/simulation.js && node --check dist/simulation.worker.js && node --check dist/compatibility.js",
+    "check": "node --check dist/main.js && node --check dist/forest.js && node --check dist/fire.js && node --check dist/simulation.js && node --check dist/simulation.worker.js && node --check dist/compatibility.js && node --check dist/flight.js && node --check dist/flight-physics.js && node --check dist/flight-collision.js && node --check dist/flight-avatar.js && node --check dist/flight-game.js && node --check dist/dragon-breath.js",
     "build:sim": "sh simulation/build.sh",
-    "test:worker": "node scripts/test-worker.mjs"
+    "test:worker": "node scripts/test-worker.mjs",
+    "test:flight": "node scripts/test-flight.mjs && node scripts/test-flight-game.mjs && node scripts/test-dragon-breath.mjs"
   }
 }

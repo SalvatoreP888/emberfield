@@ -8,6 +8,7 @@ import { Simulation } from './simulation.js';
 import { ForestView } from './forest.js';
 import { FireEffects } from './fire.js';
 import { CompatibilityRenderer } from './compatibility.js';
+import { FlightMode } from './flight.js';
 
 const $ = id => document.getElementById(id);
 const clamp = (x,a,b) => Math.max(a,Math.min(b,x));
@@ -15,7 +16,7 @@ const mobile = matchMedia('(max-width: 780px)').matches;
 const params = new URLSearchParams(location.search);
 let seed = Math.max(1, (Number(params.get('seed')) || 2049) >>> 0);
 const state = {tool:'observe',paused:false,speed:1,brush:10,windSpeed:14,windAngle:-Math.PI/4,moisture:.18,rain:0,night:false,sound:false,quality:'auto',overlay:'natural',scenario:'clearing'};
-let sim,forest,fire,renderer,composer,controls,scene,camera,sun,hemi,fillLight,bloom,rainfall;
+let sim,forest,fire,renderer,composer,controls,scene,camera,sun,hemi,fillLight,bloom,rainfall,flight;
 let visualTime=0,uiClock=0,focusClock=0,lastTime=performance.now(),frameCount=0,fpsClock=0,contextLost=false;
 let lastSequence=-1,lastRevision=-1,resetPending=false,shadowClock=0,qualityLevel=1,pixelRatio=1;
 const qualityNames=['low','medium','high'],qualityLabels=['Low','Balanced','High'];
@@ -51,6 +52,7 @@ function weatherChanged(){
 }
 
 function setTool(tool){
+  if(flight?.active)flight.exit();
   state.tool=tool;holding=false;
   document.querySelectorAll('[data-tool]').forEach(b=>{const active=b.dataset.tool===tool;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
   $('world').classList.toggle('painting',tool!=='observe');
@@ -62,13 +64,14 @@ function setTool(tool){
 }
 
 function syncSimulationControl(){sim?.setControl(state.paused,state.speed,!document.hidden&&!contextLost);}
-function setPaused(value){state.paused=value;syncSimulationControl();$('pause').setAttribute('aria-label',value?'Resume simulation':'Pause simulation');$('pause').innerHTML=`<svg><use href="#i-${value?'play':'pause'}"/></svg>`;$('run-state').textContent=value?'SIMULATION PAUSED':'SIMULATION LIVE';document.body.classList.toggle('paused',value);}
+function setPaused(value){state.paused=value;syncSimulationControl();$('pause').setAttribute('aria-label',value?'Resume simulation':'Pause simulation');$('pause').innerHTML=`<svg><use href="#i-${value?'play':'pause'}"/></svg>`;$('run-state').textContent=value?'SIMULATION PAUSED':'SIMULATION LIVE';document.body.classList.toggle('paused',value);flight?.syncPlayback(value);}
 function applyPreset(value){
   const p={dry:[14,.18,0],balanced:[8,.4,0],windy:[42,.08,0],rain:[20,.65,1]}[value];
   [state.windSpeed,state.moisture,state.rain]=p;weatherChanged();notify({dry:'Dry fuel. Watch the wind carry the fire.',balanced:'Cooler, damper forest conditions.',windy:'Strong winds. Embers can start spot fires.',rain:'Rain is soaking fuel and cooling the forest.'}[value]);
 }
 async function resetWorld(newSeed){
   if(resetPending||!sim)return;
+  flight?.exit();
   resetPending=true;holding=false;brushPoint=null;updateBrush();setPaused(true);$('reset').disabled=$('regenerate').disabled=$('scenario').disabled=$('seed').disabled=true;
   notify('Regenerating the forest…');
   try{
@@ -148,16 +151,27 @@ function setupUI(){
   $('preset').onchange=e=>applyPreset(e.target.value);
   $('regenerate').onclick=()=>{const value=clamp(Number($('seed').value)||2049,1,2147483647);resetWorld(value>>>0);};
   $('seed').onkeydown=e=>{if(e.key==='Enter')$('regenerate').click();};
-  $('help').onclick=()=>$('help-dialog').showModal();
+  $('help').onclick=()=>{if(document.pointerLockElement)document.exitPointerLock();keys.clear();$('help-dialog').showModal();};
   $('close-help').onclick=$('start-exploring').onclick=()=>$('help-dialog').close();
   $('help-dialog').addEventListener('click',e=>{if(e.target===$('help-dialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
   $('fullscreen').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch{notify('Full screen is not available in this view.');}};
   $('sound').onclick=toggleSound;
   window.addEventListener('keydown',e=>{
     if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||$('help-dialog').open)return;
+    if((e.key===' '||e.key==='Enter')&&e.target.closest?.('button,summary,[role="button"]'))return;
     const key=e.key.toLowerCase();keys.add(key);
     if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(key))e.preventDefault();
     if(e.repeat)return;
+    if(key==='escape'&&flight?.active){flight.exit();setPanel(false);return;}
+    if(key==='b'){flight?.enter('bird');return;}
+    if(key==='g'){flight?.enter('dragon');return;}
+    if(flight?.active){
+      if(key==='c'){flight.toggleCamera();return;}
+      if(key==='p'){setPaused(!state.paused);return;}
+      if(key==='h'){if(document.pointerLockElement)document.exitPointerLock();keys.clear();$('help-dialog').showModal();}
+      if(['1','2','3','4'].includes(key))setTool(['observe','ignite','water','clear'][Number(key)-1]);
+      return;
+    }
     if(key===' ')setPaused(!state.paused);
     if(['1','2','3','4'].includes(key))setTool(['observe','ignite','water','clear'][Number(key)-1]);
     if(key==='['||key===']'){state.brush=clamp(state.brush+(key===']'?2:-2),4,26);$('brush-value').textContent=`${state.brush} m`;updateBrush();}
@@ -221,6 +235,8 @@ function setupScene(){
   renderer.domElement.addEventListener('pointerup',()=>holding=false);
   renderer.domElement.addEventListener('pointercancel',()=>holding=false);
   renderer.domElement.addEventListener('pointerleave',()=>{if(!holding){brushPoint=null;brushRing.visible=brushDisc.visible=false;}});
+  scene.add(camera);
+  flight=new FlightMode({scene,camera,controls,canvas:renderer.domElement,sim,keys,notify,supported:!compatibility,toggleSimulation:()=>setPaused(!state.paused),onEnter:()=>{setTool('observe');setPanel(false);holding=false;brushRing.visible=brushDisc.visible=false;}});
   window.addEventListener('resize',resizeGraphics);
   setTool('observe');
 }
@@ -251,6 +267,7 @@ function paint(force=false){
 }
 
 function moveCamera(dt){
+  if(flight?.active){flight.update(dt,state);return;}
   let x=0,z=0;
   if(keys.has('w')||keys.has('arrowup'))z+=1;
   if(keys.has('s')||keys.has('arrowdown'))z-=1;
@@ -332,7 +349,7 @@ async function start(){
     $('loading-message').textContent='Growing your forest…';await new Promise(resolve=>requestAnimationFrame(resolve));setupScene();
     forest.sync();weatherChanged();setLighting();applyQuality(mobile?0:1);setOverlay(state.overlay);setPaused(false);updateUI();
     // Read-only diagnostics support reproducible performance and integration checks.
-    window.emberfield={diagnostics:()=>({engine:'Rust WebAssembly',thread:sim.thread,metrics:{...sim.metrics},performance:{...performanceStats},quality:qualityNames[qualityLevel],sequence:sim.sequence,renderer:compatibility?'Canvas compatibility':'Three.js WebGL 2',seed,stats:Array.from(sim.stats()),smokeCount:sim.smoke().length/8,emberCount:sim.embers().length/8,revision:sim.revision(),focus:{...sim.focus},camera:camera.position.toArray(),target:controls.target.toArray(),state:{...state},effects:{...fire.counts},render:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures}})};
+    window.emberfield={diagnostics:()=>({engine:'Rust WebAssembly',thread:sim.thread,metrics:{...sim.metrics},performance:{...performanceStats},quality:qualityNames[qualityLevel],sequence:sim.sequence,renderer:compatibility?'Canvas compatibility':'Three.js WebGL 2',seed,stats:Array.from(sim.stats()),smokeCount:sim.smoke().length/8,emberCount:sim.embers().length/8,revision:sim.revision(),focus:{...sim.focus},camera:camera.position.toArray(),target:controls.target.toArray(),state:{...state},flight:flight.diagnostics(),effects:{...fire.counts},render:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures}})};
     lastTime=performance.now();requestAnimationFrame(frame);setTimeout(()=>{$('loading').classList.add('hidden');setTimeout(()=>$('loading').remove(),700);},500);
   }catch(error){console.error('Emberfield startup failed:',error);$('loading-message').textContent=error.message||'The forest could not start. Please reload this page.';const button=document.createElement('button');button.className='error-button';button.textContent='Reload forest';button.onclick=()=>location.reload();$('loading').appendChild(button);}
 }
