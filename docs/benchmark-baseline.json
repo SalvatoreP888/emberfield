@@ -1,0 +1,439 @@
+{
+  "kind": "baseline",
+  "binary": "/tmp/emberfield-v1.wasm",
+  "sha256": "bbbb2b7c4f3869f6e4eef2cb7fc796dfcfc1d1d8cad6dca76f9dede822d154fa",
+  "wasmBytes": 58560,
+  "node": "v24.22.1",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "cpuCount": 9,
+  "method": "Fresh module instance per repeat; seed2049,wind14km/hNE,moisture18%;20Hz export calls; setup/advance to scenario time excluded;3 repeats,20 simulated seconds measured. Streaming includes20 one-chunk movements with1s integration each. JS-to-WASM packing included; rendering excluded.",
+  "rows": [
+    {
+      "scenario": "idle",
+      "simulatedSeconds": 20,
+      "repeats": 3,
+      "medianMsPerSimulatedSecond": 2.4680709500000004,
+      "minMsPerSimulatedSecond": 2.3025417499999987,
+      "maxMsPerSimulatedSecond": 2.47921785,
+      "samples": [
+        {
+          "repeat": 1,
+          "wallMs": 49.584357,
+          "msPerSimulatedSecond": 2.47921785,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 2,
+          "wallMs": 49.36141900000001,
+          "msPerSimulatedSecond": 2.4680709500000004,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 3,
+          "wallMs": 46.05083499999998,
+          "msPerSimulatedSecond": 2.3025417499999987,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "established_fire",
+      "simulatedSeconds": 20,
+      "repeats": 3,
+      "medianMsPerSimulatedSecond": 23.43106725,
+      "minMsPerSimulatedSecond": 21.85622025,
+      "maxMsPerSimulatedSecond": 23.45182114999998,
+      "samples": [
+        {
+          "repeat": 1,
+          "wallMs": 437.124405,
+          "msPerSimulatedSecond": 21.85622025,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 217,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2798,
+            "embers": 999,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 2,
+          "wallMs": 468.621345,
+          "msPerSimulatedSecond": 23.43106725,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 217,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2798,
+            "embers": 999,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 3,
+          "wallMs": 469.03642299999956,
+          "msPerSimulatedSecond": 23.45182114999998,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 217,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2798,
+            "embers": 999,
+            "memoryBytes": 3866624
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "large_fire",
+      "simulatedSeconds": 20,
+      "repeats": 3,
+      "medianMsPerSimulatedSecond": 25.02682829999994,
+      "minMsPerSimulatedSecond": 24.831915000000027,
+      "maxMsPerSimulatedSecond": 27.78385309999994,
+      "samples": [
+        {
+          "repeat": 1,
+          "wallMs": 500.53656599999886,
+          "msPerSimulatedSecond": 25.02682829999994,
+          "before": {
+            "seconds": 240.01004028320312,
+            "burning": 581,
+            "burned": 20,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2793,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 260.0100402832031,
+            "burning": 633,
+            "burned": 31,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2799,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 2,
+          "wallMs": 496.6383000000005,
+          "msPerSimulatedSecond": 24.831915000000027,
+          "before": {
+            "seconds": 240.01004028320312,
+            "burning": 581,
+            "burned": 20,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2793,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 260.0100402832031,
+            "burning": 633,
+            "burned": 31,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2799,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 3,
+          "wallMs": 555.6770619999988,
+          "msPerSimulatedSecond": 27.78385309999994,
+          "before": {
+            "seconds": 240.01004028320312,
+            "burning": 581,
+            "burned": 20,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2793,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 260.0100402832031,
+            "burning": 633,
+            "burned": 31,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2799,
+            "embers": 1000,
+            "memoryBytes": 3866624
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "rain",
+      "simulatedSeconds": 20,
+      "repeats": 3,
+      "medianMsPerSimulatedSecond": 17.541558749999968,
+      "minMsPerSimulatedSecond": 16.61349229999996,
+      "maxMsPerSimulatedSecond": 17.664367950000088,
+      "samples": [
+        {
+          "repeat": 1,
+          "wallMs": 332.26984599999923,
+          "msPerSimulatedSecond": 16.61349229999996,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 99,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2357,
+            "embers": 16,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 2,
+          "wallMs": 353.28735900000174,
+          "msPerSimulatedSecond": 17.664367950000088,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 99,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2357,
+            "embers": 16,
+            "memoryBytes": 3866624
+          }
+        },
+        {
+          "repeat": 3,
+          "wallMs": 350.83117499999935,
+          "msPerSimulatedSecond": 17.541558749999968,
+          "before": {
+            "seconds": 100.00150299072266,
+            "burning": 136,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2795,
+            "embers": 996,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 120.00272369384766,
+            "burning": 99,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 2357,
+            "embers": 16,
+            "memoryBytes": 3866624
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "streaming",
+      "simulatedSeconds": 20,
+      "repeats": 3,
+      "medianMsPerSimulatedSecond": 5.486666299999888,
+      "minMsPerSimulatedSecond": 5.266640050000023,
+      "maxMsPerSimulatedSecond": 5.501443450000079,
+      "samples": [
+        {
+          "repeat": 1,
+          "wallMs": 109.73332599999776,
+          "msPerSimulatedSecond": 5.486666299999888,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3595,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3932160
+          }
+        },
+        {
+          "repeat": 2,
+          "wallMs": 110.02886900000158,
+          "msPerSimulatedSecond": 5.501443450000079,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3595,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3932160
+          }
+        },
+        {
+          "repeat": 3,
+          "wallMs": 105.33280100000047,
+          "msPerSimulatedSecond": 5.266640050000023,
+          "before": {
+            "seconds": 0,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3601,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3866624
+          },
+          "after": {
+            "seconds": 19.999980926513672,
+            "burning": 0,
+            "burned": 0,
+            "trees": 3595,
+            "chunks": 121,
+            "smoke": 0,
+            "embers": 0,
+            "memoryBytes": 3932160
+          }
+        }
+      ]
+    }
+  ]
+}

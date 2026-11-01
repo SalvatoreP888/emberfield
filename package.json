@@ -1,0 +1,12 @@
+{
+  "name": "emberfield",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Rust/WebAssembly wildfire sandbox with a Three.js rendering adapter.",
+  "scripts": {
+    "check": "node --check dist/main.js && node --check dist/forest.js && node --check dist/fire.js && node --check dist/simulation.js && node --check dist/simulation.worker.js && node --check dist/compatibility.js",
+    "build:sim": "sh simulation/build.sh",
+    "test:worker": "node scripts/test-worker.mjs"
+  }
+}

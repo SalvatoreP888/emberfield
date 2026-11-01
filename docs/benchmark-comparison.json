@@ -1,0 +1,194 @@
+{
+  "baselineArtifact": "simulation/baselines/v1.wasm",
+  "baselineFile": "benchmark-baseline-recheck.json",
+  "initialBaselineFile": "benchmark-baseline.json",
+  "optimizedFile": "benchmark-optimized.json",
+  "baselineSha256": "bbbb2b7c4f3869f6e4eef2cb7fc796dfcfc1d1d8cad6dca76f9dede822d154fa",
+  "optimizedSha256": "86aa3878f0b535a176d21de84a272c336f7f475be86531dfe1d964d4ec546a51",
+  "method": "Final old/new benchmark commands run serially after shipped-WASM tests, three fresh-instance repeats per scenario, identical seed/weather/actions and20Hz calling pattern. Setup excluded; intense-fire pools near full. Core+packing only, not browserFPS. Idle timings are near timer/call-overhead limits; do not interpret the idle ratio as an application speedup.",
+  "memoryBytes": {
+    "before": 3866624,
+    "after": 4718592
+  },
+  "wasmBytes": {
+    "before": 58560,
+    "after": 66911
+  },
+  "rows": [
+    {
+      "scenario": "idle",
+      "beforeMsPerSimulatedSecond": 2.7414065499999998,
+      "afterMsPerSimulatedSecond": 0.0035257000000001428,
+      "speedup": 777.5495788070139,
+      "reductionPercent": 99.87139083767053,
+      "beforeRange": [
+        2.5504327000000004,
+        2.8698333000000003
+      ],
+      "afterRange": [
+        0.002357950000000031,
+        0.02294780000000003
+      ],
+      "beforeCounts": {
+        "seconds": 0,
+        "burning": 0,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 0,
+        "embers": 0,
+        "memoryBytes": 3866624
+      },
+      "afterCounts": {
+        "seconds": 0,
+        "burning": 0,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 0,
+        "embers": 0,
+        "memoryBytes": 4718592
+      }
+    },
+    {
+      "scenario": "established_fire",
+      "beforeMsPerSimulatedSecond": 22.14171550000001,
+      "afterMsPerSimulatedSecond": 8.212616200000003,
+      "speedup": 2.6960611528394574,
+      "reductionPercent": 62.90885320064744,
+      "beforeRange": [
+        21.39843475,
+        22.185288950000007
+      ],
+      "afterRange": [
+        7.959469050000001,
+        8.401931150000006
+      ],
+      "beforeCounts": {
+        "seconds": 100.00150299072266,
+        "burning": 136,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2795,
+        "embers": 996,
+        "memoryBytes": 3866624
+      },
+      "afterCounts": {
+        "seconds": 100.00150299072266,
+        "burning": 152,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2800,
+        "embers": 999,
+        "memoryBytes": 4718592
+      }
+    },
+    {
+      "scenario": "large_fire",
+      "beforeMsPerSimulatedSecond": 25.337332100000094,
+      "afterMsPerSimulatedSecond": 9.377712900000006,
+      "speedup": 2.7018669018967385,
+      "reductionPercent": 62.98855434744066,
+      "beforeRange": [
+        24.222028749999936,
+        25.979278599999997
+      ],
+      "afterRange": [
+        9.290237950000028,
+        9.700632299999985
+      ],
+      "beforeCounts": {
+        "seconds": 240.01004028320312,
+        "burning": 581,
+        "burned": 20,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2793,
+        "embers": 1000,
+        "memoryBytes": 3866624
+      },
+      "afterCounts": {
+        "seconds": 240.01004028320312,
+        "burning": 582,
+        "burned": 19,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2798,
+        "embers": 998,
+        "memoryBytes": 4718592
+      }
+    },
+    {
+      "scenario": "rain",
+      "beforeMsPerSimulatedSecond": 17.427118599999993,
+      "afterMsPerSimulatedSecond": 8.555601000000024,
+      "speedup": 2.036925120748378,
+      "reductionPercent": 50.9063936708388,
+      "beforeRange": [
+        16.2670752,
+        18.641555150000023
+      ],
+      "afterRange": [
+        8.341603699999997,
+        8.772638000000006
+      ],
+      "beforeCounts": {
+        "seconds": 100.00150299072266,
+        "burning": 136,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2795,
+        "embers": 996,
+        "memoryBytes": 3866624
+      },
+      "afterCounts": {
+        "seconds": 100.00150299072266,
+        "burning": 152,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 2800,
+        "embers": 999,
+        "memoryBytes": 4718592
+      }
+    },
+    {
+      "scenario": "streaming",
+      "beforeMsPerSimulatedSecond": 5.569032549999974,
+      "afterMsPerSimulatedSecond": 2.6910737000000156,
+      "speedup": 2.0694463143093933,
+      "reductionPercent": 51.67789601086048,
+      "beforeRange": [
+        5.208231149999847,
+        5.67494340000012
+      ],
+      "afterRange": [
+        2.4163284000000202,
+        2.7186296500000027
+      ],
+      "beforeCounts": {
+        "seconds": 0,
+        "burning": 0,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 0,
+        "embers": 0,
+        "memoryBytes": 3866624
+      },
+      "afterCounts": {
+        "seconds": 0,
+        "burning": 0,
+        "burned": 0,
+        "trees": 3601,
+        "chunks": 121,
+        "smoke": 0,
+        "embers": 0,
+        "memoryBytes": 4718592
+      }
+    }
+  ]
+}

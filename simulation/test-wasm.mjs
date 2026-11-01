@@ -1,0 +1,54 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+
+const bytes = await readFile(new URL('../dist/simulation.wasm', import.meta.url));
+const module = await WebAssembly.compile(bytes);
+assert.deepEqual(WebAssembly.Module.imports(module), [], 'compiled core must not import host simulation functions');
+const s = (await WebAssembly.instantiate(module)).exports;
+const names = ['init','reset','set_focus','tree_count','trees_ptr','stats_ptr','world_revision','get_height','get_height_seeded','active_cell_count','smoke_recycled_count','step','set_weather','ignite','extinguish','firebreak','fire_states_ptr','smoke_ptr','smoke_count','embers_ptr','embers_count'];
+for (const name of names) assert.equal(typeof s[name], 'function', `missing ${name}`);
+const trees = () => new Float32Array(s.memory.buffer, s.trees_ptr(), s.tree_count() * 10);
+const fire = () => new Float32Array(s.memory.buffer, s.fire_states_ptr(), s.tree_count() * 4);
+const smoke = () => new Float32Array(s.memory.buffer, s.smoke_ptr(), s.smoke_count() * 8);
+const embers = () => new Float32Array(s.memory.buffer, s.embers_ptr(), s.embers_count() * 8);
+const stats = () => new Float32Array(s.memory.buffer, s.stats_ptr(), 8);
+const advance = seconds => { for (let i=0; i<Math.round(seconds*10); i++) s.step(0.1); };
+function starter() { s.reset(2049); s.set_weather(14, -Math.PI/4, .18, 0); s.ignite(-18,-16,12); s.ignite(-7,-22,6); }
+function crownCount() { const data=fire();let count=0;for(let i=1;i<data.length;i+=4)if(data[i]>0)count++;return count; }
+const pureHeight=s.get_height_seeded(90,-71,2049);
+assert.ok(Number.isFinite(pureHeight));assert.equal(s.tree_count(),0,'pure terrain query must not allocate a forest');
+s.init(2049);assert.equal(s.get_height(90,-71),pureHeight);
+assert.ok(s.tree_count()>2500 && s.tree_count()<5000);
+const initialTrees=s.tree_count();
+const baseline=Array.from(trees());s.reset(2049);assert.deepEqual(Array.from(trees()),baseline);
+assert.equal(s.smoke_count(),0);assert.equal(s.embers_count(),0);
+assert.equal(s.active_cell_count(),0,'idle forest sleeps');
+starter();const initialBurning=stats()[1];assert.ok(initialBurning>0);
+advance(8);
+assert.ok(stats()[1]<=initialBurning+2,'initial fire must heat neighbors instead of an instant chain');
+assert.equal(crownCount(),0,'ground ignition must not instantly ignite the canopy');
+assert.ok(s.smoke_count()>0,'surface reaction must emit real smoke');
+const deterministicSmoke=Array.from(smoke());const smokeAt8=s.smoke_count();const burningAt8=stats()[1];
+starter();advance(8);assert.deepEqual(Array.from(smoke()),deterministicSmoke,'deterministic integrated smoke');
+advance(92);
+assert.ok(stats()[1]>initialBurning,'gradual spread');
+assert.ok(crownCount()>0,'delayed canopy ignition');
+const burningAt100=stats()[1];const crownsAt100=crownCount();
+const activeAt100=s.active_cell_count();const recycledAt100=s.smoke_recycled_count();
+assert.ok(activeAt100>=burningAt100&&activeAt100<s.tree_count(),'thermal frontier excludes pristine cells');
+assert.ok(recycledAt100>0,'fresh smoke is admitted when the old pool is full');
+assert.ok(stats()[4]>0,'fuel consumption changes the area estimate');
+for(const [name, data] of [['smoke',smoke()],['embers',embers()]])assert.ok(Array.from(data).every(Number.isFinite),`${name} contains finite integrated state`);
+assert.ok(s.smoke_count()<=2800&&s.embers_count()<=1000,'bounded particles');
+const persistent=Array.from(trees());const persistentFire=Array.from(fire());const revision=s.world_revision();
+s.set_focus(2000,-3000);assert.ok(s.world_revision()>revision);assert.equal(stats()[1],0);assert.equal(s.smoke_count(),0);
+s.set_focus(0,0);assert.deepEqual(Array.from(trees()),persistent,'thermal and fuel state restored');assert.deepEqual(Array.from(fire()),persistentFire,'combustion phase restored');
+advance(300);assert.ok(stats()[2]>0,'fuel exhaustion in the compiled binary');const burntAt400=stats()[2];
+const smokeBeforeWater=s.smoke_count();assert.ok(smokeBeforeWater>0);
+s.extinguish(0,0,500);assert.equal(stats()[1],0);assert.equal(s.smoke_count(),smokeBeforeWater,'existing smoke must persist after source suppression');
+advance(100);assert.equal(s.smoke_count(),0,'old parcels dissipate without looping respawn');
+s.firebreak(25,25,20);const cut=trees();let cuts=0;
+for(let i=0;i<cut.length;i+=10)if(cut[i+5]===-1){cuts++;assert.equal(cut[i+6],0);assert.equal(cut[i+7],1);}
+assert.ok(cuts>0,'cut marker');s.ignite(25,25,19);assert.equal(stats()[1],0,'cut fuel does not reignite');
+assert.ok(Number.isFinite(s.get_height(-10000,10000)));
+console.log(JSON.stringify({status:'passed',wasmBytes:bytes.length,initialTrees,initialBurning,burningAt8,smokeAt8,burningAt100,crownsAt100,activeAt100,recycledAt100,burntAt400,tested:['standalone exports','pure seeded height','sleeping idle forest','deterministic terrain','delayed surface spread','canopy delay','fuel exhaustion','active thermal frontier','deterministic smoke trajectories','bounded finite particles','fresh-smoke budget recycling','smoke persistence and dissipation','suppression','firebreak marker','streaming and thermal state restoration']},null,2));

@@ -1,0 +1,19 @@
+{
+  "binarySha256": "86aa3878f0b535a176d21de84a272c336f7f475be86531dfe1d964d4ec546a51",
+  "wasmBytes": 66911,
+  "simulatedSeconds": 12,
+  "parcels": 742,
+  "nearestSpacingRelativeToMeanDiameter": {
+    "median": 0.45746639541944184,
+    "p75": 0.6399513994735765,
+    "p90": 0.7358314369757202,
+    "fractionAboveHalfDiameter": 0.4609164420485175,
+    "fractionAboveDiameter": 0.008086253369272238
+  },
+  "previousOptimized": {
+    "parcels": 350,
+    "median": 0.781544111165519,
+    "p90": 1.3781101425229798,
+    "fractionAboveDiameter": 0.35428571428571426
+  }
+}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111a18">
+  <meta name="description" content="Explore an endless forest. Start a wildfire, change the wind, and watch a Rust-powered simulation come alive.">
+  <title>EMBERFIELD — A living fire simulation</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23131d19'/%3E%3Cpath d='M34 7C42 25 51 28 51 41a19 19 0 0 1-38 0c0-11 9-19 14-26-2 14 2 18 6 19 8-9 4-19 1-27' fill='%23ed8d51'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
+</head>
+<body>
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+  <symbol id="i-fire" viewBox="0 0 24 24"><path d="M13 2c1 5 6 7 6 12a7 7 0 1 1-14 0c0-4 3-7 5-9-1 4 0 6 2 7 3-4 2-7 1-10Z"/><path d="M12 14c2 2 3 3 3 5a3 3 0 0 1-6 0c0-2 2-3 3-5Z"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V6a2 2 0 0 1 4 0v6-8a2 2 0 0 1 4 0v8-6a2 2 0 0 1 4 0v9c0 5-3 7-7 7-3 0-5-2-7-5L3 12a2 2 0 0 1 3-2l2 3Z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/><path d="M8 15a4 4 0 0 0 4 4"/></symbol>
+  <symbol id="i-cut" viewBox="0 0 24 24"><path d="m3 21 9-9m-1-1 3-7 6-2 2 6-7 3m-5 3 4 4M3 6h4M2 10h3M6 2v3"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m7 4 14 8-14 8Z"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h8m5 0h3M4 17h3m5 0h8"/><circle cx="14" cy="7" r="3"/><circle cx="9" cy="17" r="3"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 8h12a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h5a3 3 0 1 1-3 3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 5v15"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4ZM17 8a7 7 0 0 1 0 8M20 5a11 11 0 0 1 0 14"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4Zm13 0 5 6m0-6-5 6"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+  <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2-7 9h4l-6 8h18l-6-8h4L12 2Zm0 17v3"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></symbol>
+</defs></svg>
+<main id="world" aria-label="Interactive three dimensional forest fire simulation"></main>
+<div class="screen-shade" aria-hidden="true"></div>
+<header class="masthead">
+  <div class="brand"><svg class="brand-mark"><use href="#i-fire"/></svg><div><h1>EMBERFIELD</h1><p>A LIVING FIRE SIMULATION</p></div></div>
+  <div class="header-actions">
+    <button id="sound" class="icon-button" aria-label="Enable forest and fire audio" title="Sound"><svg><use href="#i-mute"/></svg></button>
+    <button id="fullscreen" class="icon-button" aria-label="Enter full screen" title="Full screen"><svg><use href="#i-expand"/></svg></button>
+    <button id="help" class="icon-button help-button" aria-label="Controls and simulation information" title="Controls">?</button>
+    <button id="environment-toggle" class="environment-toggle" aria-expanded="true" aria-controls="environment"><svg><use href="#i-settings"/></svg><span>Environment</span></button>
+  </div>
+</header>
+<section class="live-readout" aria-label="Simulation metrics">
+  <div class="live-label"><span class="status-dot"></span><span id="run-state">SIMULATION LIVE</span><span class="tiny-line"></span><span id="elapsed">00:00</span></div>
+  <div class="metric-row"><div class="metric" title="Loaded tree cells with active surface or canopy combustion."><strong id="burning">0</strong><span>active ignitions</span></div><div class="metric" title="Fuel-consumption-weighted tree-cell area in the loaded forest; not a measured fire perimeter."><strong id="burned-area">0.00<span> ha</span></strong><span>estimated burn area</span></div></div>
+  <div class="conditions"><svg><use href="#i-wind"/></svg><span id="wind-brief">14 km/h NE</span><span>·</span><span id="moisture-brief">18% moisture</span></div>
+<div class="phase-readout"><span><i class="phase-dot surface"></i><b id="surface-count">0</b> surface</span><span><i class="phase-dot crown"></i><b id="crown-count">0</b> crown</span><span><i class="phase-dot smolder"></i><b id="smolder-count">0</b> smolder</span></div>
+</section>
+<aside id="environment" class="environment-panel">
+  <div class="panel-heading"><div><span class="eyebrow">SHAPE THE SIMULATION</span><h2>Environment</h2></div><button id="close-environment" class="icon-button small" aria-label="Close environment panel"><svg><use href="#i-close"/></svg></button></div>
+  <div class="preset-row"><span class="preset-dot"></span><select id="preset" aria-label="Weather preset"><option value="dry">Dry woodland</option><option value="balanced">Temperate forest</option><option value="windy">High wind</option><option value="rain">Rainstorm</option></select></div>
+  <div class="wind-display"><div class="wind-compass"><span class="compass-n">N</span><span class="compass-e">E</span><span class="compass-s">S</span><span class="compass-w">W</span><div class="compass-rings"></div><svg id="wind-arrow"><use href="#i-arrow"/></svg></div><div class="wind-number"><strong id="wind-value">14<span> km/h</span></strong><button id="wind-direction" title="Rotate wind direction 45 degrees">Blowing northeast <span>↻</span></button></div></div>
+  <label class="range-label" for="wind-speed"><span>Wind speed</span><output id="wind-output">14 km/h</output></label><input id="wind-speed" type="range" min="0" max="60" step="1" value="14">
+  <div class="range-ends"><span>Still</span><span>Strong</span></div>
+  <label class="range-label" for="moisture"><span>Fuel moisture</span><output id="moisture-output">18%</output></label><input id="moisture" type="range" min="0" max="80" step="1" value="18" class="moisture-range">
+  <div class="range-ends"><span>Dry</span><span>Wet</span></div>
+  <div class="panel-rule"></div>
+  <label class="toggle-row" for="rain"><span><svg><use href="#i-drop"/></svg>Rainfall</span><input id="rain" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span></label>
+  <label class="toggle-row" for="night"><span><svg><use href="#i-sun"/></svg>Nightfall</span><input id="night" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span></label>
+  <div class="panel-rule"></div>
+  <div class="view-controls">
+    <label for="quality">Visual detail <span id="quality-current">Auto · Balanced</span></label>
+    <select id="quality" aria-label="Visual detail"><option value="auto">Automatic</option><option value="high">High</option><option value="medium">Balanced</option><option value="low">Low</option></select>
+    <label for="overlay">Forest view</label><select id="overlay" aria-label="Forest view"><option value="natural">Natural</option><option value="heat">Heat</option><option value="fuel">Remaining fuel</option></select>
+    <div id="overlay-legend" class="overlay-legend" hidden><span id="overlay-low">Cool</span><i></i><span id="overlay-high">Burning</span></div>
+    <label for="scenario">Start a new scene</label><select id="scenario" aria-label="Starting scene"><option value="clearing">Clearing fire</option><option value="spark">Single ignition</option><option value="empty">Unburned forest</option></select>
+  </div>
+  <div class="panel-rule"></div>
+  <div class="seed-row"><div><span class="eyebrow">PROCEDURAL WORLD</span><span class="seed">Seed <input id="seed" aria-label="World seed" type="number" min="1" max="2147483647" value="2049"></span></div><button id="regenerate" class="icon-button" aria-label="Generate a new forest from the seed" title="Generate from seed"><svg><use href="#i-reset"/></svg></button></div>
+  <details class="performance-details" id="performance-details"><summary>Performance <span id="thread-status">Starting physics…</span></summary><dl><dt>Frame time · p95</dt><dd id="perf-frame">—</dd><dt>Physics step</dt><dd id="perf-physics">—</dd><dt>Playback</dt><dd id="perf-rate">—</dd><dt>Active world</dt><dd id="perf-trees">—</dd><dt>Particles</dt><dd id="perf-particles">—</dd></dl></details>
+  <p class="panel-note"><svg><use href="#i-tree"/></svg>The forest continues as you explore.</p>
+</aside>
+<div id="notification" role="status" class="notification"></div>
+<div class="lower-left"><div class="location-label"><span class="location-mark">⌖</span><span id="coordinates">0 E · 0 N</span></div><div class="engine-label"><span class="engine-dot"></span>RUST / WASM<span class="separator">·</span><span id="fps">— FPS</span><span class="separator">·</span><span id="render-mode">WEBGL 2</span></div></div>
+<div class="minimap-wrap"><canvas id="minimap" width="240" height="240" aria-label="Local forest and fire map"></canvas><span class="minimap-n">N</span><span class="map-scale">100 m</span></div>
+<footer class="control-area">
+  <div id="tool-hint" class="tool-hint">Drag to look around <span>·</span> Scroll to zoom <span>·</span> WASD to explore</div>
+  <nav class="toolbar" aria-label="Simulation tools">
+    <div class="tool-group"><button class="tool active" data-tool="observe" aria-pressed="true" title="Explore (1)"><svg><use href="#i-hand"/></svg><span>Explore</span><kbd>1</kbd></button><button class="tool ignite-tool" data-tool="ignite" aria-pressed="false" title="Ignite (2)"><svg><use href="#i-fire"/></svg><span>Ignite</span><kbd>2</kbd></button><button class="tool water-tool" data-tool="water" aria-pressed="false" title="Water (3)"><svg><use href="#i-drop"/></svg><span>Water</span><kbd>3</kbd></button><button class="tool clear-tool" data-tool="clear" aria-pressed="false" title="Cut a firebreak (4)"><svg><use href="#i-cut"/></svg><span>Firebreak</span><kbd>4</kbd></button></div>
+    <span class="toolbar-rule"></span><button id="pause" class="icon-button pause-button" aria-label="Pause simulation" title="Pause (Space)"><svg><use href="#i-pause"/></svg></button><button id="speed" class="speed-button" title="Change simulation speed">1×</button><span class="toolbar-rule"></span><button id="reset" class="icon-button reset-button" aria-label="Reset simulation" title="Reset simulation"><svg><use href="#i-reset"/></svg></button>
+  </nav>
+  <div class="bottom-caption"><span>AN INFINITE FOREST. ONE SPARK.</span><span class="brush-size" id="brush-label" hidden>BRUSH <strong id="brush-value">10 m</strong><span>[ / ] to resize</span></span></div>
+</footer>
+<div id="loading" class="loading"><div class="loading-mark"><svg><use href="#i-fire"/></svg></div><h2>EMBERFIELD</h2><p id="loading-message">Growing your forest…</p><div class="loading-track"><span></span></div><span class="loading-caption">PROCEDURAL NATURE · RUST + WEBASSEMBLY</span></div>
+<dialog id="help-dialog"><div class="dialog-heading"><span class="eyebrow">FIELD GUIDE</span><button id="close-help" class="icon-button" aria-label="Close field guide"><svg><use href="#i-close"/></svg></button></div><h2>Everything starts<br>with a spark.</h2><p>Explore an endless seeded forest, paint a line of fire, and watch the wind carry it through the canopy.</p><div class="guide-grid"><span>Orbit the forest</span><strong>Drag / right-drag</strong><span>Travel through the world</span><strong>W A S D / arrow keys</strong><span>Move faster</span><strong>Hold Shift</strong><span>Zoom</span><strong>Scroll / pinch</strong><span>Explore · Ignite · Water · Firebreak</span><strong>1 · 2 · 3 · 4</strong><span>Pause or resume</span><strong>Space</strong><span>Brush size</span><strong>[ / ]</strong></div><div class="guide-note"><h3>Fuel, fire, and moving air</h3><p>Use Heat and Remaining fuel views to inspect the fire front. Automatic visual detail adjusts rendering cost as the scene gets busier. Choose an unburned forest to start your own experiment.</p><p>Ground fuel dries and heats before ignition. Sustained heat can ignite tree crowns. Wind, slope, moisture, rain, and landing embers shape how the fire spreads.</p><p>A dedicated worker runs Rust physics at fixed time steps, while the camera and interface stay independent. Smoke and embers respond to buoyancy, drag, turbulence, cooling, and dissipation. Three.js draws the resulting positions. Smoke can linger after you extinguish a fire.</p><p>This is an interactive physical approximation. The moving active region is 396 m across; altered trees pause outside it and retain their state when you return. The world and smoke reset on reload.</p><a class="source-link" href="./emberfield-source.zip" download>Download the Rust + renderer source ↗</a></div><button id="start-exploring" class="primary-button">Back to the forest <span>↗</span></button></dialog>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

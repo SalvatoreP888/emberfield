@@ -1,0 +1,127 @@
+{
+  "environment": "Node CPU measurement with actual WASM and Three.js objects; Canvas draw calls stubbed, no GPU timing",
+  "forest": {
+    "before": {
+      "trees": 3601,
+      "initMs": 89.60120900000001,
+      "initHeightCalls": 27454,
+      "unchangedNewSnapshot": {
+        "medianMs": 2.6825129999999717,
+        "p95Ms": 3.1397359999999708
+      },
+      "unchanged200SnapshotGpuBufferInvalidations": 1600,
+      "stream40Ms": 40.486561999999935,
+      "stream40HeightCalls": 27458,
+      "stream144Ms": 31.65245399999992,
+      "stream144HeightCalls": 27453,
+      "levels": {},
+      "allTreeTriangles": 759111
+    },
+    "after": {
+      "trees": 3601,
+      "initMs": 43.808496000000105,
+      "initHeightCalls": 28321,
+      "unchangedNewSnapshot": {
+        "medianMs": 0.04747999999995045,
+        "p95Ms": 0.2944029999999884
+      },
+      "unchanged200SnapshotGpuBufferInvalidations": 0,
+      "stream40Ms": 7.861598000000072,
+      "stream40HeightCalls": 2,
+      "stream144Ms": 16.03261999999995,
+      "stream144HeightCalls": 6548,
+      "levels": {
+        "low": {
+          "treeTriangles": 330131,
+          "visibleChunks": 23,
+          "chunks": 36
+        },
+        "medium": {
+          "treeTriangles": 450312,
+          "visibleChunks": 23,
+          "chunks": 36
+        },
+        "high": {
+          "treeTriangles": 687112,
+          "visibleChunks": 23,
+          "chunks": 36
+        },
+        "overlayMatrixInvalidations": 0
+      }
+    }
+  },
+  "compatibility": {
+    "constructorMs": 138.469625,
+    "sourceSmoke": 742,
+    "first": {
+      "rebuilds": 1,
+      "buildMs": 17.84456800000001,
+      "drawn": 418,
+      "candidates": 418,
+      "fieldPixels": 158400,
+      "renderMs": 36.357496000000026,
+      "visible": {
+        "smoke": 418,
+        "embers": 14,
+        "smokeCandidates": 418,
+        "sourceSmoke": 742
+      }
+    },
+    "cachedRender": {
+      "medianMs": 0.027951000000030035,
+      "p95Ms": 0.10948100000001659
+    },
+    "snapshotRender": {
+      "medianMs": 1.5245990000000234,
+      "p95Ms": 1.918266000000017
+    },
+    "smokeBuildsAcross100UnchangedFrames": 0,
+    "fieldMemoryBytes": 3801600
+  },
+  "validation": {
+    "detachedSnapshotReplacement": "passed",
+    "nearPlane": [
+      {
+        "distance": 133.18118246097734,
+        "visibleTrees": 1240,
+        "invalid": 0
+      },
+      {
+        "distance": 225,
+        "visibleTrees": 1893,
+        "invalid": 0
+      },
+      {
+        "distance": 17,
+        "visibleTrees": 66,
+        "invalid": 0
+      }
+    ],
+    "overlays": [
+      {
+        "mode": "heat",
+        "matrixInvalidations": 0
+      },
+      {
+        "mode": "fuel",
+        "matrixInvalidations": 0
+      },
+      {
+        "mode": "natural",
+        "matrixInvalidations": 0
+      }
+    ],
+    "thermalStatePreserved": true,
+    "opticalDensity": {
+      "zeroOpacityAlpha": 0,
+      "thinAlphaSum": 20628,
+      "denseAlphaSum": 53464,
+      "monotonic": true
+    }
+  },
+  "sourceHashes": {
+    "dist/forest.js": "497eee35b66e7a210c2c23e8e36f5aa5d1297b84e7cdb1661f96b0628e6cd854",
+    "dist/compatibility.js": "62f7f07e55f2e55cfa0c64cc5af71706478bc1e0ce346344beef21d8f929eccf",
+    "dist/simulation.wasm": "86aa3878f0b535a176d21de84a272c336f7f475be86531dfe1d964d4ec546a51"
+  }
+}

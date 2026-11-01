@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-10-28T23:01:04.724Z",
+  "note": "CPU adapter microbenchmark only; no WebGL context or measured GPU FPS. Upload counts are requested buffer bytes after warmup. Quality budgets and shader instruction analysis do not prove a GPU frame-rate improvement.",
+  "sourceSha256": "4a2ac2f7d45ac4066cdfe46d48d4a7bb8d7eeb363ecf1e80e8eef6912b4b5be9",
+  "baselineSha256": "d2ba548807f56d149852735f5a65cf36f6874de3cca0f8965c21583927d757b2",
+  "fixture": {
+    "trees": 3600,
+    "burningTrees": 400,
+    "smokeParcels": 2800,
+    "embers": 1000,
+    "displayUpdates": 1800,
+    "displayHz": 60,
+    "snapshotHz": 20,
+    "viewport": [
+      1280,
+      720
+    ],
+    "pixelRatio": 1.5,
+    "updatedQuality": "medium"
+  },
+  "shaderAudit": {
+    "threeRevision": "180",
+    "glslVersion": "300 es via ShaderMaterial prefix",
+    "sampler": "highp sampler3D / filtered R8 / NoColorSpace",
+    "noiseVolumeBytes": 32768,
+    "vertexAttributes": {
+      "flame": 5,
+      "smoke": 7,
+      "embers": 3
+    },
+    "varyingComponentsIncludingFog": {
+      "flame": 9,
+      "smoke": 10,
+      "embers": 4
+    },
+    "noiseTextureFetchesPerFragment": {
+      "low": {
+        "flame": 3,
+        "smoke": 2
+      },
+      "medium": {
+        "flame": 5,
+        "smoke": 4
+      },
+      "high": {
+        "flame": 6,
+        "smoke": 5
+      }
+    },
+    "legacyHashCallsPerFragment": {
+      "flame": 48,
+      "smoke": 40
+    },
+    "compileVerified": false,
+    "reason": "WebGL is unavailable in the current browser; glslangValidator/glslc are not installed. Varying, attribute, precision, uniform, texture format and prefix contracts were checked against the vendored Three.js source."
+  },
+  "results": [
+    {
+      "implementation": "committed baseline",
+      "scenario": "unchanged adopted snapshot",
+      "frames": 1800,
+      "cpuMs": 409.58,
+      "msPerDisplayUpdate": 0.2275,
+      "flameRefreshes": 300,
+      "particleRefreshes": 600,
+      "rendered": {
+        "burning": 400,
+        "flames": 3200,
+        "surfaceFlames": 1600,
+        "crownFlames": 1600,
+        "smoke": 2800,
+        "embers": 1000
+      },
+      "uploadMiB": 169.83
+    },
+    {
+      "implementation": "updated medium",
+      "scenario": "unchanged adopted snapshot",
+      "frames": 1800,
+      "cpuMs": 3.46,
+      "msPerDisplayUpdate": 0.0019,
+      "flameRefreshes": 0,
+      "particleRefreshes": 0,
+      "rendered": {
+        "burning": 240,
+        "flames": 960,
+        "surfaceFlames": 480,
+        "crownFlames": 480,
+        "smoke": 341,
+        "embers": 650
+      },
+      "smokeScreenCoverage": 3.3999958736366698,
+      "maxDensityCompensation": 3.4764567147868073,
+      "uploadMiB": 0
+    },
+    {
+      "implementation": "committed baseline",
+      "scenario": "20 Hz adopted snapshots",
+      "frames": 1800,
+      "cpuMs": 382.63,
+      "msPerDisplayUpdate": 0.2126,
+      "flameRefreshes": 300,
+      "particleRefreshes": 600,
+      "rendered": {
+        "burning": 400,
+        "flames": 3200,
+        "surfaceFlames": 1600,
+        "crownFlames": 1600,
+        "smoke": 2800,
+        "embers": 1000
+      },
+      "uploadMiB": 169.83
+    },
+    {
+      "implementation": "updated medium",
+      "scenario": "20 Hz adopted snapshots",
+      "frames": 1800,
+      "cpuMs": 263.4,
+      "msPerDisplayUpdate": 0.1463,
+      "flameRefreshes": 300,
+      "particleRefreshes": 600,
+      "rendered": {
+        "burning": 240,
+        "flames": 960,
+        "surfaceFlames": 480,
+        "crownFlames": 480,
+        "smoke": 341,
+        "embers": 650
+      },
+      "smokeScreenCoverage": 3.3999958736366698,
+      "maxDensityCompensation": 3.4764567147868073,
+      "uploadMiB": 39.45
+    }
+  ],
+  "improvements": {
+    "unchangedSnapshot": {
+      "cpuReductionPercent": 99.16,
+      "requestedUploadReductionPercent": 100
+    },
+    "twentyHzSnapshots": {
+      "cpuReductionPercent": 31.16,
+      "requestedUploadReductionPercent": 76.77
+    }
+  }
+}
